@@ -4,9 +4,11 @@ from pymongo import MongoClient
 from pymongo.server_api import ServerApi
 from bson import ObjectId
 from certifi import where
+from flask_cors import CORS
 from env import env
 
 app = Flask(__name__)
+CORS(app) 
 
 class DataSchema(Schema):
     count = fields.Integer(required=True)
