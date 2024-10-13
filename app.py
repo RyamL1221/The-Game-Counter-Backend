@@ -6,7 +6,7 @@ from bson import ObjectId
 from certifi import where
 from env import env
 
-app = Flask(__name__) 
+app = Flask(__name__)
 
 class DataSchema(Schema):
     count = fields.Integer(required=True)
@@ -26,6 +26,9 @@ def getCount():
         # Find the document with the specified ObjectId
         result = collection.find_one({"_id": ObjectId("670c36f98145364754b17703")})
 
+        if result is None:
+            return jsonify({"error": "Document not found"}), 404
+
         result['_id'] = str(result['_id'])
 
         # Return JSON data
@@ -42,27 +45,32 @@ def plusOne():
     # Check if JSON data is provided
     if not data:
         return jsonify({"error": "No JSON data provided"}), 400
+
     try:
         # Validate and deserialize incoming JSON
         schema = DataSchema()
-        data = schema.load(request.get_json())
+        data = schema.load(data)
     except ValidationError as err:
-        return jsonify({"error": "JSON body does not match schema)"}), 400
-    
+        return jsonify({"error": "JSON body does not match schema", "messages": err.messages}), 400
+
     # Connect to MongoDB
     try:
-        client = getMongoClient() 
+        client = getMongoClient()
         db = client.get_database('dev')
         collection = db.get_collection('count')
 
-        # Insert the updated data into the MongoDB collection
+        # Increment the count field by 1
         collection.update_one(
             {"_id": ObjectId("670c36f98145364754b17703")},
-            {"$inc": {"count": 1}}  # Increment the count field by 1
+            {"$inc": {"count": 1}}
         )
 
+        # Find the updated document
         result = collection.find_one({"_id": ObjectId("670c36f98145364754b17703")})
-            
+
+        if result is None:
+            return jsonify({"error": "Document not found"}), 404
+
         result['_id'] = str(result['_id'])
 
         # Return updated JSON data
@@ -80,7 +88,11 @@ def getMongoClient():
         )
         return client
     except Exception as e:
-        return jsonify({"error": "Failed to connect to MongoDB", "message": str(e)}), 500
+        raise RuntimeError(f"Failed to connect to MongoDB: {str(e)}")
 
 def create_app():
-   return app
+    return app
+
+if __name__ == '__main__':
+    app = create_app()
+    app.run(debug=True)
