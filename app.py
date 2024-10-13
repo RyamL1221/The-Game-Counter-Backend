@@ -88,7 +88,7 @@ def getMongoClient():
         )
         return client
     except Exception as e:
-        raise RuntimeError(f"Failed to connect to MongoDB: {str(e)}")
+        return jsonify({"error": "Failed to connect to MongoDB client", "message": str(e)}), 500
 
 def create_app():
     return app
