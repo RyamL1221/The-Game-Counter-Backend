@@ -58,7 +58,7 @@ def plusOne():
     # Connect to MongoDB
     try:
         client = getMongoClient()
-        db = client.get_database('dev')
+        db = client.get_database('prod')
         collection = db.get_collection('count')
 
         # Increment the count field by 1
