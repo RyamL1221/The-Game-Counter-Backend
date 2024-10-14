@@ -22,7 +22,7 @@ def getCount():
     # Connect to MongoDB
     try:
         client = getMongoClient()
-        db = client.get_database('dev')
+        db = client.get_database('prod')
         collection = db.get_collection('count')
 
         # Find the document with the specified ObjectId
