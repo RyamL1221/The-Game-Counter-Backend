@@ -9,7 +9,7 @@ from env import env
 from MongoDB import MongoDB
 
 app = Flask(__name__)
-CORS(app) 
+CORS(app, resources={r"/*": {"origins": "*"}})  # Allows all origins access to all endpoints
 
 class DataSchema(Schema):
     count = fields.Integer(required=True)
