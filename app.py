@@ -6,6 +6,7 @@ from bson import ObjectId
 from certifi import where
 from flask_cors import CORS
 from env import env
+from MongoDB import MongoDB
 
 app = Flask(__name__)
 CORS(app) 
@@ -21,8 +22,8 @@ def hello_world():
 def getCount():
     # Connect to MongoDB
     try:
-        client = getMongoClient()
-        db = client.get_database('dev')
+        client = MongoDB.getMongoClient()
+        db = client.get_database()
         collection = db.get_collection('count')
 
         # Find the document with the specified ObjectId
@@ -57,8 +58,8 @@ def plusOne():
 
     # Connect to MongoDB
     try:
-        client = getMongoClient()
-        db = client.get_database('dev')
+        client = MongoDB.getMongoClient()
+        db = client.get_database()
         collection = db.get_collection('count')
 
         # Increment the count field by 1
@@ -80,17 +81,6 @@ def plusOne():
 
     except Exception as e:
         return jsonify({"error": "Internal server error", "message": str(e)}), 500
-
-def getMongoClient():
-    try:
-        client = MongoClient(
-            env['MONGO_URI'],
-            server_api=ServerApi(version="1", strict=True, deprecation_errors=True),
-            tlsCAFile=where()
-        )
-        return client
-    except Exception as e:
-        return jsonify({"error": "Failed to connect to MongoDB client", "message": str(e)}), 500
 
 def create_app():
     return app
