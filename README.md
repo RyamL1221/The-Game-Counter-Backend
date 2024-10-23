@@ -9,6 +9,6 @@ In order to set up the backend locally, you must
 3. Clone the repository `https://github.com/RyamL1221/The-Game-Counter-Backend`
 4. Install dependencies `pip install -r requirements.txt`
 5. Set up env.py
-6. Run the app `flask --app app run`
+6. Run the app `python -m flask run `
 
 pip freeze > requirements.txt
