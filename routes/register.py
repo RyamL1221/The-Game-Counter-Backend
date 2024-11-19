@@ -10,8 +10,6 @@ register_bp = Blueprint("register", __name__)
 @register_bp.route('/register', methods=['POST'])
 def register():
     data = request.get_json()
-    if not data:
-        return jsonify({"error": "No JSON data provided"}), 400
     try:
         register = DataSchema()
         register.load(data)
