@@ -21,6 +21,7 @@ def plus_one():
         db = client.get_database()
         collection = db.get_collection('count')
 
+        # Update total count by incrementing by 1
         collection.update_one(
             {"_id": ObjectId("670c36f98145364754b17703")},
             {"$inc": {"count": 1}}
