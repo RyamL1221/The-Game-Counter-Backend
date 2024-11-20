@@ -9,8 +9,6 @@ plus_one_bp = Blueprint("plus_one", __name__)
 @plus_one_bp.route('/plus-one', methods=['PUT'])
 def plus_one():
     data = request.get_json()
-    if not data:
-        return jsonify({"error": "No JSON data provided"}), 400
 
     try:
         schema = DataSchema()
