@@ -23,7 +23,7 @@ def register():
 
         email = data['email']
         if(collection.find_one({"email": email})):
-            return jsonify({"error": "Email already exists"}),  0
+            return jsonify({"error": "Email already exists"}), 409
         
         password = data['password']
 

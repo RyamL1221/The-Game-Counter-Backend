@@ -13,7 +13,7 @@ def create_app():
     app.register_blueprint(minus_one_bp)
     app.register_blueprint(register_bp)
     app.register_blueprint(login_bp)
-
+    
     return app
 
 if __name__ == "__main__":
