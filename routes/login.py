@@ -10,7 +10,7 @@ from env import env
 
 login_bp = Blueprint("login", __name__)
 
-@login_bp.route('/login', methods=['PUT'])
+@login_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     try:
