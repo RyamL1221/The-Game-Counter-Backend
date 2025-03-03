@@ -17,6 +17,16 @@ def plus_one():
         schema.load(data)
     except ValidationError as err:
         return jsonify({"error": "JSON body does not match schema", "messages": err.messages}), 400
+    
+    try:
+        token = data['token']
+        decoded_token = jwt.decode(token, env['JWT_SECRET'], algorithms=["HS256"])
+    except jwt.ExpiredSignatureError:
+        return jsonify({"error": "Token has expired"}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"error": "Invalid token"}), 401
+    except Exception as e:
+        return jsonify({"error": "Internal server error", "message": str(e)}), 500
 
     try:
         client = MongoDB.getMongoClient()
