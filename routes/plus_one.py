@@ -43,7 +43,6 @@ def plus_one():
 
         result = collection.find_one({"email": data['email']})
 
-        result['email'] = str(result['email'])
         return jsonify(result), 200
 
     except Exception as e:
