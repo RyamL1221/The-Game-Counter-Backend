@@ -3,6 +3,7 @@ from marshmallow import ValidationError
 from bson import ObjectId
 from models.schema import DataSchema
 from database.MongoDB import MongoDB
+import jwt
 
 minus_one_bp = Blueprint("minus_one", __name__)
 
@@ -22,6 +23,7 @@ def minus_one():
         client = MongoDB.getMongoClient()
         db = client.get_database()
         collection = db.get_collection('count')
+
 
         collection.update_one(
             {"_id": ObjectId("670c36f98145364754b17703")},
