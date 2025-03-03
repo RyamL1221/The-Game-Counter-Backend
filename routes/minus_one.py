@@ -23,6 +23,7 @@ def minus_one():
         db = client.get_database()
         collection = db.get_collection('count')
 
+        
         collection.update_one(
             {"_id": ObjectId("670c36f98145364754b17703")},
             {"$inc": {"count": -1}}
