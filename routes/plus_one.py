@@ -33,16 +33,17 @@ def plus_one():
         db = client.get_database()
         collection = db.get_collection('count')
 
+        if not collection.find_one({"email": data['email']}):
+            return jsonify({"error": "Email not found"}), 404
+        
         collection.update_one(
-            {"_id": ObjectId("670c36f98145364754b17703")},
+            {"email": data['email']},
             {"$inc": {"count": 1}}
         )
-        result = collection.find_one({"_id": ObjectId("670c36f98145364754b17703")})
 
-        if result is None:
-            return jsonify({"error": "Document not found"}), 404
+        result = collection.find_one({"email": data['email']})
 
-        result['_id'] = str(result['_id'])
+        result['email'] = str(result['email'])
         return jsonify(result), 200
 
     except Exception as e:
