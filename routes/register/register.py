@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
 from database.MongoDB import MongoDB
-from schema import DataSchema
+from .schema import DataSchema
 import bcrypt
 
 
