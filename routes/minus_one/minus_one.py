@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
 from bson import ObjectId
-from models.schema import DataSchema
+from .schema import DataSchema
 from database.MongoDB import MongoDB
 
 minus_one_bp = Blueprint("minus_one", __name__)

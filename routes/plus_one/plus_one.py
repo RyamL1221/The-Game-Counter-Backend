@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
-from bson import ObjectId
-from models.schema import DataSchema
+from .schema import DataSchema
 from database.MongoDB import MongoDB
 from env import env
 import jwt
