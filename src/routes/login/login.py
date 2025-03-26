@@ -27,7 +27,10 @@ def login():
         email = data['email']
         user = collection.find_one({"email": email})
         if(user):
-            if not bcrypt.checkpw(data['password'].encode('utf-8'), user['password']):
+            if not bcrypt.checkpw(
+                data['password'].encode('utf-8'),
+                user['password'].encode('utf-8')  # Ensure this is bytes
+            ):
                 return jsonify({"error": "Invalid credentials"}), 401
             token = jwt.encode(
                 {
