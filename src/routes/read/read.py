@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
 from bson import ObjectId
-from models.schema import DataSchema
-from database.MongoDB import MongoDB
+from .schema import DataSchema
+from ...database.MongoDB import MongoDB
 
 read_bp = Blueprint("read", __name__)
 
@@ -18,6 +18,7 @@ def read():
     except ValidationError as err:
         return jsonify({"error": "JSON body does not match schema", "messages":err.messages}), 400
     
+    
     try:
         token = data['token']
         decoded_token = jwt.decode(token, env['JWT_SECRET'], algorithms=["HS256"])
@@ -27,14 +28,14 @@ def read():
             return jsonify({"error":"Invalid token"}), 401
         except Exception as e:
             return jsonify({"error":"Internal server error","message":str.(e)}), 500
-        
+         
     try:
         client = MongoDB.getMongoClient()
         db = client.get_database()
         collection = db.get_collection('count')
 
 
-        result = collection.find({'email': data['email']},{'_id':0,'password':0})
+        result = collection.find_one({'email': data['email']},{'_id':0,'password':0})
         if not result:
             return jsonify({"error": "Email not found"}), 404
         return jsonify(result), 200
