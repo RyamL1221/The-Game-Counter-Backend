@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
-from database.MongoDB import MongoDB
-from models.login import DataSchema
+from ...database.MongoDB import MongoDB
+from .schema import DataSchema
 import bcrypt
 import jwt
 from datetime import datetime, timedelta
@@ -10,7 +10,7 @@ from env import env
 
 login_bp = Blueprint("login", __name__)
 
-@login_bp.route('/login', methods=['PUT'])
+@login_bp.route('/login', methods=['POST'])
 def login():
     data = request.get_json()
     try:

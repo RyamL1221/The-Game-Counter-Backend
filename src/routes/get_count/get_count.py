@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify
 from bson import ObjectId
-from database.MongoDB import MongoDB
+from ...database.MongoDB import MongoDB
 
 get_count_bp = Blueprint("get_count", __name__)
 
