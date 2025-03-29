@@ -7,7 +7,7 @@ import jwt
 
 plus_one_bp = Blueprint("plus_one", __name__)
 
-@plus_one_bp.route('/plus-one', methods=['PUT'])
+@plus_one_bp.route('/plus-one', methods=['POST'])
 def plus_one():
     data = request.get_json() # Retrieve JSON data from request
 

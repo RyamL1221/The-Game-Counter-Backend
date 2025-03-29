@@ -6,7 +6,7 @@ from ...database.MongoDB import MongoDB
 
 minus_one_bp = Blueprint("minus_one", __name__)
 
-@minus_one_bp.route('/minus-one', methods=['PUT'])
+@minus_one_bp.route('/minus-one', methods=['POST'])
 def minus_one():
     data = request.get_json()
     if not data:
