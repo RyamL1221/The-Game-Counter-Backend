@@ -46,8 +46,7 @@ def plus_one():
         )
 
         # Retrieve updated document
-        result = collection.find_one({"email": data['email']})
-
+        result = collection.find_one({"email": data['email']}, {"password": 0, "_id": 0})
         # Return the document as JSON
         return jsonify(result), 200
 
