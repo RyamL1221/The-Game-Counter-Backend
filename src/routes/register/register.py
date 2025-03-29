@@ -31,7 +31,8 @@ def register():
         
         user_data = {
             "email": email,
-            "password": hashed_password
+            "password": hashed_password,
+            "count": 0,
         }
 
         collection.insert_one(user_data)
