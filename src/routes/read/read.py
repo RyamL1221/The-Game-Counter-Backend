@@ -8,7 +8,7 @@ from env import env
 
 read_bp = Blueprint("read", __name__)
 
-@read_bp.route('/read',methods =['GET'])
+@read_bp.route('/read',methods =['POST'])
 def read():
     data = request.get_json()
     if not data:
