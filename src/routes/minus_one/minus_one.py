@@ -1,13 +1,13 @@
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
 from bson import ObjectId
-from models.schema import DataSchema
-from database.MongoDB import MongoDB
+from .schema import DataSchema
+from ...database.MongoDB import MongoDB
 
-plus_one_bp = Blueprint("plus_one", __name__)
+minus_one_bp = Blueprint("minus_one", __name__)
 
-@plus_one_bp.route('/plus-one', methods=['PUT'])
-def plus_one():
+@minus_one_bp.route('/minus-one', methods=['POST'])
+def minus_one():
     data = request.get_json()
     if not data:
         return jsonify({"error": "No JSON data provided"}), 400
@@ -23,9 +23,10 @@ def plus_one():
         db = client.get_database()
         collection = db.get_collection('count')
 
+        
         collection.update_one(
             {"_id": ObjectId("670c36f98145364754b17703")},
-            {"$inc": {"count": 1}}
+            {"$inc": {"count": -1}}
         )
         result = collection.find_one({"_id": ObjectId("670c36f98145364754b17703")})
 
