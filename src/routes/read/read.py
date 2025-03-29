@@ -22,7 +22,7 @@ def read():
     
     
     try:
-        token = data['token']
+        token = data['auth_token']
         decoded_token = jwt.decode(token, env['JWT_SECRET'], algorithms=["HS256"])
     except jwt.ExpiredSignatureError:
             return jsonify({"error":"Token has expired"}), 401
