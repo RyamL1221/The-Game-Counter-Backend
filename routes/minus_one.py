@@ -3,6 +3,8 @@ from marshmallow import ValidationError
 from bson import ObjectId
 from models.schema import DataSchema
 from database.MongoDB import MongoDB
+from env import env
+import jwt
 
 minus_one_bp = Blueprint("minus_one", __name__)
 
@@ -19,20 +21,30 @@ def minus_one():
         return jsonify({"error": "JSON body does not match schema", "messages": err.messages}), 400
 
     try:
+        token = data['token']
+        decodedToken = jwt.decode(token, env['JWT_SECRET'], algorithms=["H256"])
+        
+    except jwt.ExpiredSignatureError:
+        return jsonify({"error": "Token has expired"}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"error": "Invalid token"}), 401
+    except Exception as e:
+        return jsonify({"error": "Internal server error", "message": str(e)}), 500 
+    
+    try:  
         client = MongoDB.getMongoClient()
         db = client.get_database()
         collection = db.get_collection('count')
-
+        
+        if not collection.find_one({"email": data['email']}):
+            return jsonify({"error": "Email not found"}), 404
+        
         collection.update_one(
-            {"_id": ObjectId("670c36f98145364754b17703")},
+            {"email": data['email']},
             {"$inc": {"count": -1}}
         )
-        result = collection.find_one({"_id": ObjectId("670c36f98145364754b17703")})
-
-        if result is None:
-            return jsonify({"error": "Document not found"}), 404
-
-        result['_id'] = str(result['_id'])
+        result = collection.find_one({"email": data['email']})
+        
         return jsonify(result), 200
 
     except Exception as e:
