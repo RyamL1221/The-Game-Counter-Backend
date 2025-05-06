@@ -14,5 +14,6 @@ In order to set up the backend locally, you must
 Put all the dependencies in a text document named requirements.txt `pip freeze > requirements.txt`
 
 Run a specific unit test: `python -m unittest tests.[filename]`
+
 Run all unit tests: `python -m unittest discover -s tests`
 
