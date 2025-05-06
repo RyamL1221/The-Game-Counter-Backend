@@ -4,7 +4,7 @@ from ...database.MongoDB import MongoDB
 from .schema import DataSchema
 import bcrypt
 import jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from env import env
 
 
@@ -33,7 +33,7 @@ def login():
                 {
                     "email": email,
                     "id": str(user['_id']),
-                    "exp": datetime.utcnow() + timedelta(days=3)  # Set token to expire in 3 days
+                    "exp": datetime.now(timezone.utc) + timedelta(days=3)  # Set token to expire in 3 days
                 },
                 env['JWT_SECRET_KEY'],
                 algorithm="HS256"
