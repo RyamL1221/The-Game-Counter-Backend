@@ -1,14 +1,14 @@
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
 from bson import ObjectId
-from models.schema import DataSchema
-from database.MongoDB import MongoDB
-from env import env
+from .schema import DataSchema
+from ...database.MongoDB import MongoDB
 import jwt
+from env import env
 
 minus_one_bp = Blueprint("minus_one", __name__)
 
-@minus_one_bp.route('/minus-one', methods=['PUT'])
+@minus_one_bp.route('/minus-one', methods=['POST'])
 def minus_one():
     data = request.get_json()
     if not data:
@@ -35,9 +35,6 @@ def minus_one():
         client = MongoDB.getMongoClient()
         db = client.get_database()
         collection = db.get_collection('count')
-        
-        if not collection.find_one({"email": data['email']}):
-            return jsonify({"error": "Email not found"}), 404
         
         collection.update_one(
             {"email": data['email']},

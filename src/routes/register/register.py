@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
-from database.MongoDB import MongoDB
-from models.register import DataSchema
+from ...database.MongoDB import MongoDB
+from .schema import DataSchema
 import bcrypt
 
 
@@ -23,7 +23,7 @@ def register():
 
         email = data['email']
         if(collection.find_one({"email": email})):
-            return jsonify({"error": "Email already exists"}),  0
+            return jsonify({"error": "Email already exists"}), 409
         
         password = data['password']
 
@@ -31,7 +31,8 @@ def register():
         
         user_data = {
             "email": email,
-            "password": hashed_password
+            "password": hashed_password,
+            "count": 0,
         }
 
         collection.insert_one(user_data)
