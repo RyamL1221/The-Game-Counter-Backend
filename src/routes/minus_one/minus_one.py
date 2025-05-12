@@ -3,6 +3,7 @@ from marshmallow import ValidationError
 from .schema import DataSchema
 from ...database.MongoDB import MongoDB
 from env import env
+import requests
 import jwt
 
 minus_one_bp = Blueprint("minus_one", __name__)
@@ -47,6 +48,18 @@ def minus_one():
 
         # Retrieve updated document
         result = collection.find_one({"email": data['email']}, {"password": 0, "_id": 0})
+
+         # Send Discord webhook notification
+        webhook_url = env['DISCORD_WEBHOOK_URL']
+        content = f"Someone just unlost the game"
+        payload = {"content": content}
+
+        try:
+            resp = requests.post(webhook_url, json=payload, timeout=2)
+            resp.raise_for_status()  # Raise an error for bad responses
+        except Exception as webhook_error:
+            print(f"Failed to send webhook: {webhook_error}")
+
         # Return the document as JSON
         return jsonify(result), 200
 
