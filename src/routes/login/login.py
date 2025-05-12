@@ -42,4 +42,5 @@ def login():
         else:
             return jsonify({"error": "User not found"}), 404
     except Exception as e:
-        return jsonify({"error": "Internal server error", "message": str(e)}), 500
+        print(e)
+        return jsonify({"error": "Internal server error"}), 500

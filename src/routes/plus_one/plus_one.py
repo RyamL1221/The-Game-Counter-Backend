@@ -51,4 +51,5 @@ def plus_one():
         return jsonify(result), 200
 
     except Exception as e:
-        return jsonify({"error": "Internal server error", "message": str(e)}), 500
+        print(e)
+        return jsonify({"error": "Internal server error"}), 500
