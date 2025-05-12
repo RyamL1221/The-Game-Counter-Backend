@@ -21,17 +21,22 @@ def register():
         db = client.get_database()
         collection = db.get_collection('count')
 
-        email = data['email']
+        email = data['email'].lower()
+
+        # Check if the email already exists in the database
         if(collection.find_one({"email": email})):
             return jsonify({"error": "Email already exists"}), 409
         
         password = data['password']
 
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-        
+        hashed_answer = bcrypt.hashpw(data['security_answer'].encode('utf-8'), bcrypt.gensalt())
+
         user_data = {
             "email": email,
             "password": hashed_password,
+            "security_question": data['security_question'],
+            "security_answer": hashed_answer,
             "count": 0,
         }
 
@@ -39,4 +44,4 @@ def register():
 
         return jsonify({"message": "User registered successfully"}), 200
     except Exception as e:
-        return jsonify({"error": "Internal server error", "message": str(e)}), 500
+        return jsonify({"error": "Internal server error"}), 500
