@@ -10,7 +10,7 @@ def data_analysis():
     try:
         client = MongoDB.getMongoClient()
         db = client.get_database()
-        collection = db.get_collection('count')
+        collection = db.get_collection('users')
 
         all_counts = collection.find({}, {'_id': 0, 'count': 1})
         count_arr = [doc['count'] for doc in all_counts if 'count' in doc]

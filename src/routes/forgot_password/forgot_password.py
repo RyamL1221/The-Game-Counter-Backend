@@ -23,7 +23,7 @@ def forgot_password():
     try:
         client = MongoDB.getMongoClient()
         db = client.get_database()
-        collection = db.get_collection('count')
+        collection = db.get_collection('users')
 
         result = collection.find_one({'email': data['email']},{'_id':0,'password':0})
         if not result:
