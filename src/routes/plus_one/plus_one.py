@@ -47,7 +47,10 @@ def plus_one():
         )
 
         # Retrieve updated document
-        result = collection.find_one({"email": data['email']}, {"password": 0, "_id": 0})
+        result = collection.find_one(
+            { "email": data["email"] },
+            { "_id": 0, "email": 1, "count": 1 }
+        )
 
         # Send Discord webhook notification
         webhook_url = env['DISCORD_WEBHOOK_URL']
