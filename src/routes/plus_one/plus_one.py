@@ -34,7 +34,7 @@ def plus_one():
         # Connect to MongoDB
         client = MongoDB.getMongoClient()
         db = client.get_database()
-        collection = db.get_collection('count')
+        collection = db.get_collection('users')
 
         # Check if email exists in database
         if not collection.find_one({"email": data['email']}):

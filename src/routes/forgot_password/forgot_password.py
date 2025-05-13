@@ -6,7 +6,7 @@ import bcrypt
 
 forgot_password_bp = Blueprint("forgot_password", __name__)
 
-@forgot_password_bp.route('/read',methods =['POST'])
+@forgot_password_bp.route('/forgot-password',methods =['POST'])
 def forgot_password():
     data = request.get_json()
     if not data:
@@ -23,7 +23,7 @@ def forgot_password():
     try:
         client = MongoDB.getMongoClient()
         db = client.get_database()
-        collection = db.get_collection('count')
+        collection = db.get_collection('users')
 
         result = collection.find_one({'email': data['email']},{'_id':0,'password':0})
         if not result:

@@ -19,7 +19,7 @@ def register():
     try:
         client = MongoDB.getMongoClient()
         db = client.get_database()
-        collection = db.get_collection('count')
+        collection = db.get_collection('users')
 
         email = data['email'].lower()
 
