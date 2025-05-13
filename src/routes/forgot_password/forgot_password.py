@@ -6,7 +6,7 @@ import bcrypt
 
 forgot_password_bp = Blueprint("forgot_password", __name__)
 
-@forgot_password_bp.route('/read',methods =['POST'])
+@forgot_password_bp.route('/forgot-password',methods =['POST'])
 def forgot_password():
     data = request.get_json()
     if not data:
