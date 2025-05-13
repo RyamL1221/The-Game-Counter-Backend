@@ -5,7 +5,7 @@ import numpy as np
 
 data_analysis_bp = Blueprint("data_analysis", __name__)
 
-@data_analysis_bp.route('/data_analysis',methods =['GET'])
+@data_analysis_bp.route('/data-analysis',methods =['GET'])
 def data_analysis():
     try:
         client = MongoDB.getMongoClient()
