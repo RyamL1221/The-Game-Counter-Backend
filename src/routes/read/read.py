@@ -35,8 +35,11 @@ def read():
         db = client.get_database()
         collection = db.get_collection('count')
 
+        result = collection.find_one(
+            { "email": data["email"] },
+            { "_id": 0, "email": 1, "count": 1 }
+        )
 
-        result = collection.find_one({'email': data['email']},{'_id':0,'password':0})
         if not result:
             return jsonify({"error": "Email not found"}), 404
         return jsonify(result), 200
