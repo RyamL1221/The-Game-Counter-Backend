@@ -1,6 +1,5 @@
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
-from bson import ObjectId
 from .schema import DataSchema
 from ...database.MongoDB import MongoDB
 import jwt
@@ -34,14 +33,18 @@ def read():
     try:
         client = MongoDB.getMongoClient()
         db = client.get_database()
-        collection = db.get_collection('count')
+        collection = db.get_collection('users')
 
+        result = collection.find_one(
+            { "email": data["email"] },
+            { "_id": 0, "email": 1, "count": 1 }
+        )
 
-        result = collection.find_one({'email': data['email']},{'_id':0,'password':0})
         if not result:
             return jsonify({"error": "Email not found"}), 404
         return jsonify(result), 200
 
     except Exception as e:
-        return jsonify({"error": "Internal server error", "message": str(e)}), 500
+        print(e)
+        return jsonify({"error": "Internal server error"}), 500
         

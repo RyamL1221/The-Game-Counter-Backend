@@ -4,7 +4,7 @@ from ...database.MongoDB import MongoDB
 from .schema import DataSchema
 import bcrypt
 import jwt
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from env import env
 
 
@@ -22,7 +22,7 @@ def login():
     try:
         client = MongoDB.getMongoClient()
         db = client.get_database()
-        collection = db.get_collection('count')
+        collection = db.get_collection('users')
 
         email = data['email']
         user = collection.find_one({"email": email})
@@ -33,7 +33,7 @@ def login():
                 {
                     "email": email,
                     "id": str(user['_id']),
-                    "exp": datetime.utcnow() + timedelta(days=3)  # Set token to expire in 3 days
+                    "exp": datetime.now(timezone.utc) + timedelta(days=3)  # Set token to expire in 3 days
                 },
                 env['JWT_SECRET_KEY'],
                 algorithm="HS256"
@@ -42,4 +42,5 @@ def login():
         else:
             return jsonify({"error": "User not found"}), 404
     except Exception as e:
-        return jsonify({"error": "Internal server error", "message": str(e)}), 500
+        print(e)
+        return jsonify({"error": "Internal server error"}), 500

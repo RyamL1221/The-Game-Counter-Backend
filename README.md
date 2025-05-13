@@ -11,6 +11,9 @@ In order to set up the backend locally, you must
 5. Set up env.py
 6. Run the app `python -m flask run `
 
-pip freeze > requirements.txt
+Put all the dependencies in a text document named requirements.txt `pip freeze > requirements.txt`
 
-Run unit tests: `python -m unittest discover -s tests`
+Run a specific unit test: `python -m unittest tests.[filename minus .py]`
+
+Run all unit tests: `python -m unittest discover -s tests`
+

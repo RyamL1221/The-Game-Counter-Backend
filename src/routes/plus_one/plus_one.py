@@ -4,6 +4,7 @@ from .schema import DataSchema
 from ...database.MongoDB import MongoDB
 from env import env
 import jwt
+import requests
 
 plus_one_bp = Blueprint("plus_one", __name__)
 
@@ -33,7 +34,7 @@ def plus_one():
         # Connect to MongoDB
         client = MongoDB.getMongoClient()
         db = client.get_database()
-        collection = db.get_collection('count')
+        collection = db.get_collection('users')
 
         # Check if email exists in database
         if not collection.find_one({"email": data['email']}):
@@ -46,9 +47,25 @@ def plus_one():
         )
 
         # Retrieve updated document
-        result = collection.find_one({"email": data['email']}, {"password": 0, "_id": 0})
+        result = collection.find_one(
+            { "email": data["email"] },
+            { "_id": 0, "email": 1, "count": 1 }
+        )
+
+        # Send Discord webhook notification
+        webhook_url = env['DISCORD_WEBHOOK_URL']
+        content = f"Someone just lost the game"
+        payload = {"content": content}
+
+        try:
+            resp = requests.post(webhook_url, json=payload, timeout=2)
+            resp.raise_for_status()  # Raise an error for bad responses
+        except Exception as webhook_error:
+            print(f"Failed to send webhook: {webhook_error}")
+
         # Return the document as JSON
         return jsonify(result), 200
 
     except Exception as e:
-        return jsonify({"error": "Internal server error", "message": str(e)}), 500
+        print(e)
+        return jsonify({"error": "Internal server error"}), 500

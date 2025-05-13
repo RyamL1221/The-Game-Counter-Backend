@@ -1,40 +1,71 @@
 from flask import Blueprint, request, jsonify
 from marshmallow import ValidationError
-from bson import ObjectId
 from .schema import DataSchema
 from ...database.MongoDB import MongoDB
+from env import env
+import requests
+import jwt
 
 minus_one_bp = Blueprint("minus_one", __name__)
 
 @minus_one_bp.route('/minus-one', methods=['POST'])
 def minus_one():
-    data = request.get_json()
-    if not data:
-        return jsonify({"error": "No JSON data provided"}), 400
+    data = request.get_json() # Retrieve JSON data from request
 
+    # Validate JSON data against schema
     try:
         schema = DataSchema()
         schema.load(data)
     except ValidationError as err:
         return jsonify({"error": "JSON body does not match schema", "messages": err.messages}), 400
+    
+    # Validate JWT token
+    try:
+        token = data['auth_token']
+        decoded_token = jwt.decode(token, env['JWT_SECRET_KEY'], algorithms=["HS256"])
+    except jwt.ExpiredSignatureError:
+        return jsonify({"error": "Token has expired"}), 401
+    except jwt.InvalidTokenError:
+        return jsonify({"error": "Invalid token"}), 401
+    except Exception as e:
+        return jsonify({"error": "Internal server error", "message": str(e)}), 500
 
     try:
+        # Connect to MongoDB
         client = MongoDB.getMongoClient()
         db = client.get_database()
         collection = db.get_collection('count')
 
+        # Check if email exists in database
+        if not collection.find_one({"email": data['email']}):
+            return jsonify({"error": "Email not found"}), 404
         
+        # Decrement count by 1
         collection.update_one(
-            {"_id": ObjectId("670c36f98145364754b17703")},
+            {"email": data['email']},
             {"$inc": {"count": -1}}
         )
-        result = collection.find_one({"_id": ObjectId("670c36f98145364754b17703")})
 
-        if result is None:
-            return jsonify({"error": "Document not found"}), 404
+        # Retrieve updated document
+        result = collection.find_one(
+            { "email": data["email"] },
+            { "_id": 0, "email": 1, "count": 1 }
+        )
 
-        result['_id'] = str(result['_id'])
+         # Send Discord webhook notification
+        webhook_url = env['DISCORD_WEBHOOK_URL']
+        content = f"Someone just unlost the game"
+        payload = {"content": content}
+
+        try:
+            resp = requests.post(webhook_url, json=payload, timeout=2)
+            resp.raise_for_status()  # Raise an error for bad responses
+        except Exception as webhook_error:
+            print(f"Failed to send webhook: {webhook_error}")
+
+        # Return the document as JSON
         return jsonify(result), 200
 
     except Exception as e:
-        return jsonify({"error": "Internal server error", "message": str(e)}), 500
+        print(e)
+        return jsonify({"error": "Internal server error"}), 500
